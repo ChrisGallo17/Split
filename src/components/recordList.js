@@ -45,7 +45,6 @@ export default function RecordList() {
 
   // This following section will display the table with the records of individuals.
   return (
-    
     //   <table className="table table-striped" style={{ marginTop: 20 }}>
     <div style={{ margin: 20 }}>
       <Box mt={ 4 } mb={ 3 }>
@@ -101,7 +100,7 @@ export default function RecordList() {
         </Table>
       </TableContainer>
       <NavLink to="/create">
-        <Fab color="primary" variant="extended" style={{position: 'absolute', right: 35, marginTop: 25}}> 
+        <Fab color="primary" variant="extended" style={{position: 'relative', marginTop: 15}}> 
           <Add />
           Create Person
         </Fab>

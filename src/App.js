@@ -9,16 +9,18 @@ import { Add } from '@material-ui/icons';
 import Edit from "./components/edit";
 import Create from "./components/create";
 import RecordList from "./components/recordList";
+import EventList from './components/eventList';
 
 function App() {
   return (
     <div className="App">
       <PrimarySearchAppBar />
       <Routes>
-        <Route exact path="/" element={<RecordList />} />
+        <Route exact path="/" element={<EventList />} />
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/create" exact element={<Create />} />
       </Routes>
+      {/* <EventList /> */}
     </div>
   );
 }

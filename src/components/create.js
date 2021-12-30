@@ -3,11 +3,16 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { Add } from '@material-ui/icons';
 import { TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Button } from "@material-ui/core";
- 
+
 function Create(props) {
   const [personName, setPersonName] = useState('');
   const [personPosition, setPersonPosition] = useState('');
   const [personLevel, setPersonLevel] = useState('');
+  
+  const [eventName, setEventName] = useState('');
+  const [eventDescription, setEventDescription] = useState('');
+  const [eventDate, setEventDate] = useState(React.useState(new Date('2014-08-18T21:11:54')));
+
 
   const handleChange = (position) => {
     if (position === "Intern") {
@@ -26,64 +31,73 @@ function Create(props) {
 	const handleSubmit = (e) => {
     e.preventDefault();
     // When post request is sent to the create url, axios will add a new record(newperson) to the database.
-    const newperson = {
-      person_name: personName,
-      person_position: personPosition,
-      person_level: personLevel,
-    };
-		console.log(newperson);
- 
+    const newEvent = {
+      event_name: eventName, 
+      event_description: eventDescription,
+      event_date: eventDate,
+    }
+    console.log(newEvent)
+
+    // axios
+    //   .post("http://localhost:5000/record/add", newperson)
+    //   .then((res) => console.log(res.data));
     axios
-      .post("http://localhost:5000/record/add", newperson)
+      .post("http://localhost:5000/event/add", newEvent)
       .then((res) => console.log(res.data));
  
     // We will empty the state after posting the data to the database
-		setPersonName("");
-		setPersonPosition("");
-		setPersonLevel("");
+		setEventName("");
+		setEventDescription("");
+		setEventDate("");
+
+    // window.location.href = "/"
   }
  
   // This following section will display the form that takes the input from the user.
     return (
       <div style={{ marginTop: 20 }}>
-        <h3>Create New Record</h3>
+        <h3>Create New Event</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <TextField
               style={{color: "white", marginBottom: 15}}
-              label="Name of the person:"
+              label="Name of Event:"
               variant="outlined"
               size="small"
               type="text"
               className="form-control"
-              value={personName}
-              onChange={e => setPersonName(e.target.value)}
+              value={eventName}
+              onChange={e => setEventName(e.target.value)}
               required
             />
           </div>
           <div className="form-group">
             <TextField
               style={{color: "white", marginBottom: 15}}
-              label="Person's position:"
+              label="Event Description:"
+              multiline
+              rows={4}
               variant="outlined"
               size="small"
               type="text"
               className="form-control"
-              value={personPosition}
-              onChange={e => setPersonPosition(e.target.value)}
+              value={eventDescription}
+              onChange={e => setEventDescription(e.target.value)}
               required
             />
           </div>
-          <div className="form-group">
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Position</FormLabel>
-              <RadioGroup onChange={ e => handleChange(e.target.value)} defaultValue="Intern" aria-label="position" name="customized-radios">
-                <FormControlLabel value="Intern" control={<Radio />} label="Intern" />
-                <FormControlLabel value="Junior" control={<Radio />} label="Junior" />
-                <FormControlLabel value="Senior" control={<Radio />} label="Senior" />
-              </RadioGroup>
-            </FormControl>
-          </div>
+          <TextField
+            id="eventdate"
+            label="Event Date"
+            type="date"
+            variant="outlined"
+            sx={{ width: 220 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={e => setEventDate(e.target.value)}
+            required
+          />
           <div className="form-group">
             <Button 
               style={{marginTop: '15px'}}
@@ -92,7 +106,7 @@ function Create(props) {
               value="Create person"
               className="btn btn-primary"
               startIcon={<Add />}>
-              Create Person
+              Create Event
             </Button>
           </div>
         </form>
