@@ -1,54 +1,58 @@
 import React, { useState } from "react";
 // This will require to npm install axios
 import axios from 'axios';
-import { Add, EventNote, Notes, Event, AddLocation , PersonAdd, Image } from '@material-ui/icons';
-import { TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Button, Container } from "@material-ui/core";
+import FriendsChip from "./Chip";
+import ChipsArray from "./chips";
+import { Add, EventNote, Notes, Event, AddLocation , PersonAdd, Image, Email } from '@material-ui/icons';
+import { TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Button, Container, Chip, IconButton, Grid } from "@material-ui/core";
 
 function Create(props) {
-  const [personName, setPersonName] = useState('');
-  const [personPosition, setPersonPosition] = useState('');
-  const [personLevel, setPersonLevel] = useState('');
-  
   const [eventName, setEventName] = useState('');
+  const [eventLocation, setEventLocation] = useState('');
   const [eventDescription, setEventDescription] = useState('');
-  const [eventDate, setEventDate] = useState(React.useState(new Date('2014-08-18T21:11:54')));
+  const [eventDate, setEventDate] = useState('');
+  const [friendsInvited, setFriendsInvited] = useState([
+    {key: "email1@gmail.com", label: "email1@gmail.com"},
+    {key: "email2@gmail.com", label: "email2@gmail.com"}
+  ]);
+  const [friendSet, setFriendSet] = useState(new Set(["email1@gmail.com", "email2@gmail.com"]))
+  const [imageAddress, setImageAddress] = useState('');
+  const [currentFriend, setCurrentFriend] = useState('');
 
-
-  const handleChange = (position) => {
-    if (position === "Intern") {
-      console.log(position)
-      setPersonLevel("Intern")
-    } else if (position === "Junior") {
-      console.log(position)
-      setPersonLevel("Junior")
+  const updateChips = (e) => {
+    console.log(currentFriend)
+    if (!friendSet.has(currentFriend)){
+      setFriendsInvited([...friendsInvited, {key: currentFriend, label: currentFriend}]);
+      setFriendSet(prev => new Set([...prev, currentFriend]));
+      setCurrentFriend('');
     } else {
-      console.log(position)
-      setPersonLevel("Senior")
+      window.alert("This friend has already been added")
     }
-  };
- 
+  }
+
 	// This function will handle the submission.
 	const handleSubmit = (e) => {
     e.preventDefault();
     // When post request is sent to the create url, axios will add a new record(newperson) to the database.
     const newEvent = {
       event_name: eventName, 
+      event_location: eventLocation, 
       event_description: eventDescription,
       event_date: eventDate,
+      friends_invited: friendsInvited,
     }
-    console.log(newEvent)
 
-    // axios
-    //   .post("http://localhost:5000/record/add", newperson)
-    //   .then((res) => console.log(res.data));
     axios
       .post("http://localhost:5000/event/add", newEvent)
       .then((res) => console.log(res.data));
  
     // We will empty the state after posting the data to the database
 		setEventName("");
+		setEventLocation("");
 		setEventDescription("");
 		setEventDate("");
+		setFriendsInvited([]);
+    setFriendSet(new Set([]))
 
     window.location.href = "/"
   }
@@ -81,8 +85,8 @@ function Create(props) {
               size="small"
               type="text"
               className="form-control"
-              // value={eventLocation}
-              // onChange={e => setEventLocation(e.target.value)}
+              value={eventLocation}
+              onChange={e => setEventLocation(e.target.value)}
               // required
             />
           </div>
@@ -115,43 +119,53 @@ function Create(props) {
               }}
               style={{ color: "white", marginBottom: 15, width: "100%" }}
               onChange={e => setEventDate(e.target.value)}
+              value={eventDate}
               // required
             />
           </div>
           <div style={{display: "flex"}}>
             <PersonAdd style={{margin: "8px"}}/>
-            <TextField
-              id="invitefriends"
-              style={{ color: "white", marginBottom: 15, width: "100%" }}
-              label="Invite Friends:"
-              variant="outlined"
-              size="small"
-              type="text"
-              className="form-control"
-              // required
-            />
+            <Grid 
+              container
+              style={{width: "100%"}}
+              direction="column"
+              justifyContent="flex-start"
+              alignItems="stretch"
+            >
+              <Grid item>
+                <TextField
+                  id="invitefriends"
+                  style={{ color: "white", width: "100%" }}
+                  label="Invite Friends (email):"
+                  variant="outlined"
+                  size="small"
+                  type="text"
+                  className="form-control"
+                  value={currentFriend}
+                  onChange={e => setCurrentFriend(e.target.value)}
+                  InputProps={{endAdornment: <IconButton onClick={e => updateChips(e)}><PersonAdd /></IconButton>}}
+                  // required
+                />
+              </Grid>
+              <Grid item style={{marginBottom: "15px"}}>
+                <ChipsArray key={friendsInvited} friends={friendsInvited} setFriendsInvited={setFriendsInvited} friendSet={friendSet} setFreindsSet={setFriendSet}/>
+              </Grid>
+            </Grid>
           </div>
           <div style={{display: "flex"}}>
             <Image style={{margin: "8px"}}/>
-            <TextField
-              id="eventpicture"
-              style={{ color: "white", marginBottom: 15, width: "100%" }}
-              label="Add Picture:"
-              variant="outlined"
-              size="small"
-              type="text"
-              className="form-control"
-              // required
-            />
             <Button
-              variant="contained"
+              variant="outlined"
               component="label"
             >
-              <Image/>
+              {/* <Image style={{ marginRight: "10px" }}/> */}
               <input
                 type="file"
                 hidden
+                value={imageAddress}
+                onChange={e => setImageAddress(e.target.value)}
               />
+              Add an Image
             </Button>
           </div>
           <div className="form-group">

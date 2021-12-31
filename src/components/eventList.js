@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Add, AddLocation, ChatBubble, PanTool, PanToolOutlined, PersonAdd } from '@material-ui/icons';
+import { Add, AddLocation, ChatBubble, PanTool, PanToolOutlined, PersonAdd, TagFaces } from '@material-ui/icons';
 import { NavLink } from "react-router-dom";
-import { Fab, Typography } from "@material-ui/core";
+import { Chip, Fab, Typography } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardMedia, CardActions, Avatar, IconButton, Container } from "@material-ui/core";
 import { Delete, MoreVert, Favorite, Share } from "@material-ui/icons";
-import { green } from "@material-ui/core/colors";
+import ChipsArray from "./chips";
 
 export default function EventList() {
   // This is the constructor that shall store our data retrieved from the database
@@ -92,6 +92,9 @@ export default function EventList() {
                 <Typography variant="body2">
                   {currentevent.event_description}
                 </Typography>
+                <Typography variant="body2">
+                  {currentevent.event_location}
+                </Typography>
               </CardContent>
               <CardActions disableSpacing>
                 <IconButton aria-label="attend" onClick={onClickWillAttend}>
@@ -113,6 +116,14 @@ export default function EventList() {
                     <Delete />
                 </IconButton>
               </CardActions>
+              {currentevent.friends_invited &&
+                <Container>
+                  {currentevent.friends_invited.map((data) => {
+                    return (
+                      <Chip icon={<TagFaces />} label={data.key} style={{ margin: '5px', marginBottom: "15px"}}/>
+                    );
+                  })}
+                </Container> }
             </Card>
           </Container> ))}
         <NavLink to="/create">
@@ -121,6 +132,7 @@ export default function EventList() {
             Create Event
           </Fab>
         </NavLink>
+        {/* <ChipsArray /> */}
       </div>
     );
   // }

@@ -44,8 +44,10 @@ eventRoutes.route("/event/add").post(function (req, response) {
   let db_connect = dbo.getDb();
   let myobj = {
     event_name: req.body.event_name,
+    event_location: req.body.event_location,
     event_description: req.body.event_description,
     event_date: req.body.event_date,
+    friends_invited: req.body.friends_invited
   };
   db_connect.collection("events").insertOne(myobj, function (err, res) {
     if (err) throw err;
@@ -60,8 +62,10 @@ eventRoutes.route("/update/:id").post(function (req, response) {
   let newvalues = {
     $set: {
       event_name: req.body.event_name,
+      event_location: req.body.event_location,
       event_description: req.body.event_description,
       event_date: req.body.event_date,
+      friends_invited: req.body.friends_invited
     },
   };
   db_connect
