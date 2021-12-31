@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Add } from '@material-ui/icons';
+import { Add, AddLocation, ChatBubble, PanTool, PanToolOutlined, PersonAdd } from '@material-ui/icons';
 import { NavLink } from "react-router-dom";
 import { Fab, Typography } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardMedia, CardActions, Avatar, IconButton, Container } from "@material-ui/core";
 import { Delete, MoreVert, Favorite, Share } from "@material-ui/icons";
+import { green } from "@material-ui/core/colors";
 
 export default function EventList() {
   // This is the constructor that shall store our data retrieved from the database
   const url = "http://localhost:5000/event/"
   const [events, setEvents] = useState([])
+  const [willAttend, setWillAttend] = useState(false)
   // const [noEvents, setNoEvents] = useState(false)
 
+
+  const onClickWillAttend = () => setWillAttend((prevWillAttend) => ! prevWillAttend)
   // This method will get the data from the database.
   useEffect(() => {
     axios
@@ -32,11 +36,13 @@ export default function EventList() {
 
   // This method will delete an event based on the method
   const deleteEvent = (id) => {
-    console.log("id: ", id)
-    axios.delete("http://localhost:5000/" + id).then((response) => {
-      console.log(response.data);
-    });
-    setEvents(events.filter((el) => el._id !== id));
+    if (window.confirm("Do you want to delete this event?")){
+      console.log("id: ", id)
+      axios.delete("http://localhost:5000/" + id).then((response) => {
+        console.log(response.data);
+      });
+      setEvents(events.filter((el) => el._id !== id));
+    }
   }
 
   // console.log(noEvents)
@@ -88,11 +94,20 @@ export default function EventList() {
                 </Typography>
               </CardContent>
               <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                  <Favorite />
+                <IconButton aria-label="attend" onClick={onClickWillAttend}>
+                  { willAttend ? <PanToolOutlined /> : <PanTool /> }
+                </IconButton>
+                <IconButton aria-label="add person">
+                  <PersonAdd />
+                </IconButton>
+                <IconButton aria-label="add location">
+                  <AddLocation />
                 </IconButton>
                 <IconButton aria-label="share">
                   <Share />
+                </IconButton>
+                <IconButton aria-label="chat">
+                  <ChatBubble />
                 </IconButton>
                 <IconButton onClick={() => deleteEvent(currentevent._id)}>
                     <Delete />
