@@ -1,4 +1,6 @@
 import './App.css';
+import * as Realm from 'realm-web'
+import { useEffect } from 'react';
 import PrimarySearchAppBar from './components/AppBar';
 import { Typography, Box, Fab } from '@material-ui/core';
 // We use Route in order to define the different routes of our application
@@ -12,6 +14,16 @@ import RecordList from "./components/recordList";
 import EventList from './components/eventList';
 
 function App() {
+  // const app = new Realm.App({id: process.env.REACT_APP_REALM_APP_ID})
+
+  // useEffect(() => {
+  //   async function getData () {
+  //       const user = await app.logIn(Realm.Credentials.anonymous())
+  //     }
+      
+  //     getData();
+  // }, [])
+
   return (
     <div className="App">
       <PrimarySearchAppBar />

@@ -8,6 +8,10 @@ app.use(express.json());
 app.use(require("./routes/event"));
 // get driver connection
 const dbo = require("./db/conn");
+
+app.get("/", (req, res) => {
+  res.send("API is running ...")
+})
  
 app.listen(port, () => {
   // perform a database connection when server starts

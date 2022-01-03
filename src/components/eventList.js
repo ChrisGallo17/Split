@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Add, AddLocation, ChatBubble, PanTool, PanToolOutlined, PersonAdd, TagFaces } from '@material-ui/icons';
+import { Add, AddLocation, Comment, PanTool, PanToolOutlined, PersonAdd, Place, TagFaces } from '@material-ui/icons';
 import { NavLink } from "react-router-dom";
-import { Chip, Fab, Typography } from "@material-ui/core";
+import { Chip, Fab, Grid, Typography, Switch } from "@material-ui/core";
 import { Card, CardHeader, CardContent, CardMedia, CardActions, Avatar, IconButton, Container } from "@material-ui/core";
 import { Delete, MoreVert, Favorite, Share } from "@material-ui/icons";
 import ChipsArray from "./chips";
+import EventMenu from "./eventMenu";
 
 export default function EventList() {
   // This is the constructor that shall store our data retrieved from the database
   const url = "http://localhost:5000/event/"
   const [events, setEvents] = useState([])
   const [willAttend, setWillAttend] = useState(false)
+  const [active, setActive] = useState(false)
   // const [noEvents, setNoEvents] = useState(false)
 
 
@@ -66,7 +68,7 @@ export default function EventList() {
     return (
       <div>
         {events.map((currentevent) => (
-          <Container maxWidth="sm" style={{ marginTop: '15px' }} key={currentevent._id}>
+          <Container maxWidth="sm" style={{ marginTop: '15px', textAlign: "left" }} key={currentevent._id}>
             <Card sx={{ maxWidth: 345 }}>
               <CardHeader
                 avatar={
@@ -75,9 +77,9 @@ export default function EventList() {
                   </Avatar>
                 }
                 action={
-                  <IconButton aria-label="settings">
-                    <MoreVert />
-                  </IconButton>
+                  // <IconButton aria-label="settings">
+                    <EventMenu currentevent={currentevent} deleteEvent={deleteEvent} />
+                  // </IconButton>
                 }
                 title={currentevent.event_name}
                 subheader={currentevent.event_date}
@@ -88,42 +90,43 @@ export default function EventList() {
                 src={"https://s3-media0.fl.yelpcdn.com/bphoto/4xekxff-5mjxc_9VaHA2hQ/o.jpg"}
                 alt="Bowling"
               />
-              <CardContent>
-                <Typography variant="body2">
-                  {currentevent.event_description}
-                </Typography>
-                <Typography variant="body2">
-                  {currentevent.event_location}
-                </Typography>
-              </CardContent>
-              <CardActions disableSpacing>
-                <IconButton aria-label="attend" onClick={onClickWillAttend}>
-                  { willAttend ? <PanToolOutlined /> : <PanTool /> }
-                </IconButton>
-                <IconButton aria-label="add person">
-                  <PersonAdd />
-                </IconButton>
-                <IconButton aria-label="add location">
-                  <AddLocation />
-                </IconButton>
-                <IconButton aria-label="share">
-                  <Share />
-                </IconButton>
-                <IconButton aria-label="chat">
-                  <ChatBubble />
-                </IconButton>
-                <IconButton onClick={() => deleteEvent(currentevent._id)}>
-                    <Delete />
-                </IconButton>
-              </CardActions>
+              <CardContent style={{paddingBottom: "16px" }}>
+                <Grid container spacing={2} style={{ display: "flex" }}>
+                  <Grid item style={{ alignItems: "flex-start", flexGrow: 1 }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                    }}>
+                      <Place fontSize="small" style={{ marginRight: "5px" }}/>
+                      <Typography variant="body2" style={{ top: 0 }}>
+                        {currentevent.event_location}
+                      </Typography>
+                    </div>
+                    <Typography variant="body2">
+                      {currentevent.event_description}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs="auto">
+                    <IconButton aria-label="attend" onClick={onClickWillAttend}>
+                      { willAttend ? <PanToolOutlined /> : <PanTool style={{ color: "#32d532" }}/> }
+                    </IconButton>
+                    <IconButton aria-label="chat">
+                      <Comment />
+                    </IconButton>
+                    {/* <CardActions disableSpacing> */}
+                    {/* </CardActions> */}
+                  </Grid>
+                </Grid>
               {currentevent.friends_invited &&
-                <Container>
+                <>
                   {currentevent.friends_invited.map((data) => {
                     return (
-                      <Chip icon={<TagFaces />} label={data.key} style={{ margin: '5px', marginBottom: "15px"}}/>
+                      <Chip icon={<TagFaces />} label={data.key} style={{ margin: '5px'}}/>
                     );
                   })}
-                </Container> }
+                </> }
+              </CardContent>
             </Card>
           </Container> ))}
         <NavLink to="/create">
@@ -132,6 +135,7 @@ export default function EventList() {
             Create Event
           </Fab>
         </NavLink>
+        <Switch value="active" onChange={() => setActive(!active)} checked={ active }/>
         {/* <ChipsArray /> */}
       </div>
     );

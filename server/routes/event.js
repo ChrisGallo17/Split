@@ -15,7 +15,6 @@ console.log("event.js is running")
 
 // This section will help you get a list of all the events.
 eventRoutes.route("/event").get(function (req, res) {
-  debugger
   let db_connect = dbo.getDb();
   console.log(db_connect);
   db_connect

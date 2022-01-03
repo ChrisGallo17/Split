@@ -1,0 +1,8 @@
+.iconb:before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 0 6px 0 0;
+}
